@@ -1,0 +1,14 @@
+---
+# handlers file for monitorlinux
+ 
+  - name: sent resutl in mail
+    mail:
+         host: 10.5.0.99
+         port: 25
+         to: khinpyaephyo.san@kbzgateway.com
+         subject: Ansible resource report
+         body: System pod-awx report was as follow.
+         attach: files/reportme.txt
+    delegate_to: localhost
+    run_once: true
+

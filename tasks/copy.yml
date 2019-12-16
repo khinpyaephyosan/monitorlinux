@@ -1,0 +1,20 @@
+---
+# tasks file for monitorlinux
+
+  - name: copy monitorme.sh
+    copy: 
+       src: files/monitorme.sh
+       dest: /home/srvmgmt/monitorme.sh    
+
+  - name: run monitorme.sh 
+    shell: bash /home/srvmgmt/monitorme.sh
+    register: output
+
+  - name: debug
+    debug:
+      var: "{{ output.stdout }}"
+#  - name: save 
+#    copy:
+#      content: "{{ output.stdout }}"
+#      dest: files/reportme.sh
+#    delegate_to: localhost

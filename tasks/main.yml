@@ -1,0 +1,43 @@
+---
+# tasks file for monitorlinux
+
+ - name: collecting resource information
+   block:
+    - set_fact:
+        filename: "reportme-{{ lookup('pipe','date') }}"
+      delegate_to: localhost
+      run_once: yes
+
+    - file:
+        path: "files/{{ filename }}.txt"
+        state: touch
+      delegate_to: localhost
+      run_once: yes
+ 
+    - script: files/monitorme.sh
+      register: output
+    
+    - lineinfile:
+        dest: "files/{{ filename }}.txt"
+        line: "{{ output.stdout }}"
+        insertafter: EOF 
+      delegate_to: localhost
+    
+    - name: sent resutl in mail
+      mail:
+         host: 10.5.0.99
+         port: 25
+         to: "{{ reporter }}"
+         subject: "{{ subject }}"
+         body: System pod-awx report was as follow.
+         attach: files/{{ filename }}.txt
+      delegate_to: localhost
+      run_once: yes
+    
+    - file:
+        path: "files/{{ filename }}.txt"
+        force: yes
+        state: absent
+      delegate_to: localhost
+      run_once: yes
+   
